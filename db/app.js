@@ -1,4 +1,4 @@
-const { getTopics, getEndpoints, getArticleById } = require('../controllers/be-nc-news-controller');
+const { getTopics, getEndpoints, getArticleById, getArticles} = require('../controllers/be-nc-news-controller');
 const { handlePSQLErrors, handleCustomErrors, handle500Errors } = require('../controllers/errors-controller');
 const express = require('express');
 
@@ -10,9 +10,9 @@ app.get('/api', getEndpoints);
 
 app.get('/api/articles/:article_id', getArticleById);
 
-//error handling
+app.get('/api/articles', getArticles)
 
-app.use(express.json());
+//error handling
 
 app.use(handlePSQLErrors)
 
