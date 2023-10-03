@@ -100,3 +100,48 @@ describe('GET /api/articles', () => {
         })
     })
 })
+
+describe("GET /api/articles/:article_id/comments", () => {
+    test("returns a 200 status code and correct comments for specific article_id, sorted by most recent date", () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+            console.log(body)
+            expect(body.comments).toHaveLength(11)
+            expect(body.comments).toBeSorted({ key: 'created_at', descending: true })
+            body.comments.forEach((comment) => {
+                expect(typeof comment.comment_id).toBe('number')
+                expect(typeof comment.votes).toBe('number')
+                expect(typeof comment.created_at).toBe('string')
+                expect(typeof comment.author).toBe('string')
+                expect(typeof comment.body).toBe('string')
+                expect(typeof comment.article_id).toBe('number')
+            })
+        })
+    })
+    test('returns a 200 status code and an empty array for article with no comments', () => {
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.comments).toEqual([])
+        })
+    })
+    test('sends appropriate error message when given a valid but non-existent id', () => {
+        return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('article does not exist')
+        })
+    })
+    test('sends appropriate error message when given an invalid id', () => {
+        return request(app)
+        .get('/api/articles/not-a-number/comments')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('bad request')
+        })
+    })
+})
