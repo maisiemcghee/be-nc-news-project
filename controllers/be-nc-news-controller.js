@@ -1,4 +1,4 @@
-const { fetchTopics, selectArticleById } = require('../models/be-nc-news-model');
+const { fetchTopics, selectArticleById, fetchArticles } = require('../models/be-nc-news-model');
 const endpoints = require('../endpoints.json');
 
 exports.getTopics = (req, res, next) => {
@@ -18,4 +18,11 @@ exports.getArticleById = (req, res, next) => {
         res.status(200).send({ article });
     })
     .catch((next))
+}
+
+exports.getArticles = (req, res, next) => {
+    return fetchArticles().then((articles) => {
+        res.status(200).send({articles})
+    })
+    .catch(next)
 }
