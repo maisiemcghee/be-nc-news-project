@@ -47,3 +47,33 @@ describe('GET /api', () => {
         })
     })
 })
+
+describe('GET /api/articles/:article_id', () => {
+    test('returns a 200 status code and sends correct article to the client', () => {
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.article.article_id).toBe(1)
+            expect(body.article.topic).toBe('mitch')
+            expect(body.article.votes).toBe(100)
+            expect(body.article.title).toBe('Living in the shadow of a great man')
+        })
+    })
+    test('sends appropriate error message when given a valid but non-existent id', () => {
+        return request(app)
+        .get('/api/articles/999')
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('article does not exist')
+        })
+    })
+    test('sends appropriate error message when given an invalid id', () => {
+        return request(app)
+        .get('/api/articles/not-a-number')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('bad request')
+        })
+    })
+})

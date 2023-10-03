@@ -25,5 +25,8 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an object of a selected article from the articles array"
   }
 }
