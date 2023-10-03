@@ -14,8 +14,6 @@ app.get('/api/articles', getArticles)
 
 //error handling
 
-app.use(express.json());
-
 app.use(handlePSQLErrors)
 
 app.use(handleCustomErrors)

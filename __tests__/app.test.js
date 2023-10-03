@@ -85,7 +85,7 @@ describe('GET /api/articles', () => {
         .expect(200)
         .then(({ body }) => {
             expect(body.articles).toHaveLength(13)
-            expect(body.articles).toBeSorted({ descending: true })
+            expect(body.articles).toBeSorted({ key: 'created_at', descending: true })
             body.articles.forEach((article) => {
                 expect(typeof article.author).toBe('string')
                 expect(typeof article.title).toBe('string')
@@ -95,6 +95,7 @@ describe('GET /api/articles', () => {
                 expect(typeof article.votes).toBe('number')
                 expect(typeof article.article_img_url).toBe('string')
                 expect(typeof article.comment_count).toBe('number')
+                expect(!article.body).toBe(true)
             })
         })
     })
