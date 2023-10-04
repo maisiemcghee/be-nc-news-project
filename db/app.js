@@ -14,6 +14,8 @@ app.get('/api/articles', getArticles)
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
+
+
 //error handling
 
 app.use(handlePSQLErrors)

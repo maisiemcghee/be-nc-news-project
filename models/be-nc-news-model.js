@@ -40,4 +40,5 @@ const selectCommentsByArticleId = (article_id) => {
     })
 }
 
+
 module.exports = { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId }
