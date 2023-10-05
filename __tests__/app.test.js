@@ -231,7 +231,7 @@ describe('POST /api/articles/:article_id/comments', () => {
 })
 
 describe('PATCH /api/articles/:article_id', () => {
-    test('returns a 200 status code and an updated article', () => {
+    test('returns a 200 status code and an updated article when votes are decrementing', () => {
         const updateArticle = { inc_vote: -100 }
         return request(app)
         .patch('/api/articles/1')
@@ -241,6 +241,19 @@ describe('PATCH /api/articles/:article_id', () => {
             expect(body.article).toMatchObject({
                 article_id: 1,
                 votes: 0
+            })
+        })
+    })
+    test('returns a 200 status code and an updated article when votes are incrementing', () => {
+        const updateArticle = { inc_vote: 100 }
+        return request(app)
+        .patch('/api/articles/1')
+        .send(updateArticle)
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.article).toMatchObject({
+                article_id: 1,
+                votes: 200
             })
         })
     })
@@ -279,6 +292,30 @@ describe('PATCH /api/articles/:article_id', () => {
         return request(app)
         .patch('/api/articles/1')
         .send(updateArticle)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('bad request')
+        })
+    })
+})
+
+describe('DELETE /api/comments/:comment_id', () => {
+    test('returns a 204 status code, deletes the specified comment and returns no body', () => {
+        return request(app)
+        .delete('/api/comments/1')
+        .expect(204)
+    })
+    test('sends appropriate error message when given a valid but non-existent id', () => {
+        return request(app)
+        .delete('/api/comments/999')
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('comment does not exist')
+        })
+    })
+    test('sends appropriate error message when given an invalid id', () => {
+        return request(app)
+        .delete('/api/comments/not-a-number')
         .expect(400)
         .then((response) => {
             expect(response.body.msg).toBe('bad request')

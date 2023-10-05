@@ -1,4 +1,4 @@
-const { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment, patchArticle } = require('../models/be-nc-news-model');
+const { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment, patchArticle, removeComment } = require('../models/be-nc-news-model');
 const endpoints = require('../endpoints.json');
 
 exports.getTopics = (req, res, next) => {
@@ -49,6 +49,14 @@ exports.updateArticle = (req, res, next) => {
     const { article_id } = req.params;
     return patchArticle(updateArticle, article_id).then((article) => {
         res.status(200).send({ article })
+    })
+    .catch(next)
+}
+
+exports.deleteComment = (req, res, next) => {
+    const { comment_id } = req.params;
+    return removeComment(comment_id).then((comment) => {
+        res.status(204).send()
     })
     .catch(next)
 }
