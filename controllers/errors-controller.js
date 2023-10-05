@@ -1,6 +1,9 @@
 exports.handlePSQLErrors = (err, req, res, next) => {
-    if (err.code === '22P02') {
+    if (err.code === '22P02' || err.code === '23502') {
         res.status(400).send({ msg: 'bad request'})
+    } 
+    if (err.code === '23503' && err.table === 'comments') {
+        res.status(404).send({ msg: 'error! user input not found'})
     } else {
         next(err);
     }
