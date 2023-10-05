@@ -51,5 +51,14 @@ const insertComment = ({ username, body }, article_id ) => {
     })
 }
 
+const patchArticle = ( newVote, article_id) => {
+    return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [newVote.inc_vote, article_id])
+    .then((result) => {
+        if (result.rows.length === 0) {
+            return Promise.reject({status: 404, msg: 'article not found'})
+        } 
+        return result.rows[0]
+    })
+}
 
-module.exports = { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment }
+module.exports = { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment, patchArticle}
