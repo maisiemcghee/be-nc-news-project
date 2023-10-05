@@ -230,4 +230,58 @@ describe('POST /api/articles/:article_id/comments', () => {
     })
 })
 
-describe('PATCH ')
+describe('PATCH /api/articles/:article_id', () => {
+    test('returns a 200 status code and an updated article', () => {
+        const updateArticle = { inc_vote: -100 }
+        return request(app)
+        .patch('/api/articles/1')
+        .send(updateArticle)
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.article).toMatchObject({
+                article_id: 1,
+                votes: 0
+            })
+        })
+    })
+    test('sends appropriate error message when given a valid but non-existent id', () => {
+        const updateArticle = { inc_vote: 100 }
+        return request(app)
+        .patch('/api/articles/999')
+        .send(updateArticle)
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('article not found')
+        })
+    })
+    test('sends appropriate error message when given an invalid id', () => {
+        const updateArticle = { inc_vote: 100 }
+        return request(app)
+        .patch('/api/articles/not-a-number')
+        .send(updateArticle)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('bad request')
+        })
+    })
+    test('sends appropriate error message when updated vote object is passed a key with a value of the wrong data type', () => {
+        const updateArticle = { inc_vote: 'one-hundred' }
+        return request(app)
+        .patch('/api/articles/1')
+        .send(updateArticle)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('bad request')
+        })
+    })
+    test('sends appropriate error message when updated vote object has a key missing', () => {
+        const updateArticle = {}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(updateArticle)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('bad request')
+        })
+    })
+})
