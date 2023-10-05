@@ -1,4 +1,4 @@
-const { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId } = require('../models/be-nc-news-model');
+const { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment } = require('../models/be-nc-news-model');
 const endpoints = require('../endpoints.json');
 
 exports.getTopics = (req, res, next) => {
@@ -35,3 +35,11 @@ exports.getCommentsByArticleId = (req, res, next) => {
     .catch(next)
 }
 
+exports.postComment = (req, res, next) => {
+    const { article_id } = req.params;
+    const newComment = req.body;
+    return insertComment(newComment, article_id).then((comment) => {
+        res.status(201).send({comment})
+    })
+    .catch(next)
+}

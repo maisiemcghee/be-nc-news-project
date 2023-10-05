@@ -145,3 +145,87 @@ describe("GET /api/articles/:article_id/comments", () => {
     })
 })
 
+describe('POST /api/articles/:article_id/comments', () => {
+    test('returns a 201 status code, inserts a new comment and returns inserted comment back to the client', () => {
+        const newComment = {
+            username: 'butter_bridge',
+            body: 'I love this'
+        }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.comment).toMatchObject({
+                comment_id: 19,
+                author: 'butter_bridge',
+                body: "I love this",
+                article_id: 1
+            })
+        })
+    })
+    test('sends appropriate error message when given a valid but non-existent id', () => {
+        const newComment = {
+            username: 'butter_bridge',
+            body: 'I love this'
+        }
+        return request(app)
+        .post('/api/articles/999/comments')
+        .send(newComment)
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('error! user input not found')
+        })
+    })
+    test('sends appropriate error message when given an invalid id', () => {
+        const newComment = {
+            username: 'butter_bridge', 
+            body: 'I love this'
+        }
+        return request(app)
+        .post('/api/articles/not-a-number/comments')
+        .send(newComment)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('bad request')
+        })
+    })
+    test('sends appropriate error message when there is a key missing in the inserted comment', () => {
+        const newComment = {
+            username: 'butter_bridge'
+        }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('bad request')
+        })
+    })
+    test('sends an appropriate error message when new comment is passed a key with a value of the wrong data type', () => {
+        const newComment = {
+            username: 'butter_bridge',
+            body: 10,
+        }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('bad request')
+        })
+    })
+    test('sends appropriate error message when username is not found in the users database', () => {
+        const newComment = {
+            username: 'crazymaisie',
+            body: 'I love this'
+        }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('error! user input not found')
+        })
+    })
+})
