@@ -338,3 +338,33 @@ describe('GET /api/users', () => {
         })
     })
 })
+
+describe('GET /api/articles (topic query)', () => {
+    test('returns a 200 status code and correct body of queried articles', () => {
+        return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toHaveLength(1)
+            body.articles.forEach((article) => {
+                expect(article.topic).toBe('cats')
+            })
+        })
+    })
+    test('returns a 200 status code and an empty array if valid topic is entered with no articles related to that topic', () => {
+        return request(app)
+        .get('/api/articles?topic=paper')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toEqual([])
+        })
+    })
+    test('sends appropriate error message when the query is a topic that does not exist', () => {
+        return request(app)
+        .get('/api/articles?topic=bananas')
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('topic not found')
+        })
+    })
+})

@@ -78,5 +78,26 @@ const fetchUsers = () => {
     })
 }
 
+const fetchArticlesByTopic = (topic) => {
+    return db.query(`SELECT * FROM topics WHERE slug = $1`, [topic])
+    .then(({ rows }) => {
+        if(rows.length === 0) {
+            return Promise.reject({ status: 404, msg: 'topic not found'})
+        }
+        return rows
+    })
+    .then(() => {
+        return db.query(`SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comment_id) AS INT) AS comment_count
+        FROM articles
+        LEFT JOIN comments ON comments.article_id = articles.article_id WHERE topic = $1
+        GROUP BY articles.article_id
+        ORDER BY articles.created_at DESC`, [topic])
+    .then((result) => {
+        return result.rows
+        })
+    })
+}
 
-module.exports = { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment, patchArticle, removeComment, fetchUsers}
+
+
+module.exports = { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment, patchArticle, removeComment, fetchUsers, fetchArticlesByTopic}
