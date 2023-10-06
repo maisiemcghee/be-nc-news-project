@@ -1,4 +1,4 @@
-const { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment, patchArticle, removeComment, fetchUsers } = require('../models/be-nc-news-model');
+const { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment, patchArticle, removeComment, fetchUsers, fetchArticlesByTopic } = require('../models/be-nc-news-model');
 const endpoints = require('../endpoints.json');
 
 exports.getTopics = (req, res, next) => {
@@ -21,7 +21,8 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    return fetchArticles().then((articles) => {
+    const topic = req.query.topic
+    return fetchArticlesByTopic(topic).then((articles) => {
         res.status(200).send({articles})
     })
     .catch(next)

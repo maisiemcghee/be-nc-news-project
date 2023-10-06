@@ -1,4 +1,4 @@
-const { getTopics, getEndpoints, getArticleById, getArticles, getCommentsByArticleId, postComment, updateArticle, deleteComment, getUsers } = require('../controllers/be-nc-news-controller');
+const { getTopics, getEndpoints, getArticleById, getArticles, getCommentsByArticleId, postComment, updateArticle, deleteComment, getUsers, getArticlesByTopic } = require('../controllers/be-nc-news-controller');
 const { handlePSQLErrors, handleCustomErrors, handle500Errors } = require('../controllers/errors-controller');
 const express = require('express');
 
