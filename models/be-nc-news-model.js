@@ -79,25 +79,42 @@ const fetchUsers = () => {
 }
 
 const fetchArticlesByTopic = (topic) => {
-    return db.query(`SELECT * FROM topics WHERE slug = $1`, [topic])
-    .then(({ rows }) => {
-        if(rows.length === 0) {
-            return Promise.reject({ status: 404, msg: 'topic not found'})
-        }
-        return rows
-    })
-    .then(() => {
-        return db.query(`SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comment_id) AS INT) AS comment_count
-        FROM articles
-        LEFT JOIN comments ON comments.article_id = articles.article_id WHERE topic = $1
-        GROUP BY articles.article_id
-        ORDER BY articles.created_at DESC`, [topic])
+    let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comment_id) AS INT) AS comment_count
+    FROM articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id` 
+
+    const queryValues = []
+
+    if (topic) {
+        queryString += ` WHERE topic = $1 `
+        queryValues.push(topic)
+    }
+
+    queryString +=  ` GROUP BY articles.article_id
+    ORDER BY articles.created_at DESC`
+        return db.query(queryString, queryValues)
     .then((result) => {
+        if (!result.rows.length && topic) {
+            return checkTopicExists(topic)
+        }
         return result.rows
         })
-    })
+        .then((rows) => {
+            return rows
+        })
 }
 
+const checkTopicExists = (topic) => {
+    return db.query(`SELECT * FROM topics WHERE slug = $1`, [topic])
+    .then((result) => {
+        if(!result.rows.length) {
+            return Promise.reject({ status: 404, msg: 'topic not found'})
+        }
+        else { 
+            return [];
+        }
+    })
+}
 
 
 module.exports = { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment, patchArticle, removeComment, fetchUsers, fetchArticlesByTopic}
