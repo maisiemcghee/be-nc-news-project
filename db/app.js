@@ -1,8 +1,11 @@
+const cors = require('cors');
 const { getTopics, getEndpoints, getArticleById, getArticles, getCommentsByArticleId, postComment, updateArticle, deleteComment, getUsers, getArticlesByTopic } = require('../controllers/be-nc-news-controller');
 const { handlePSQLErrors, handleCustomErrors, handle500Errors } = require('../controllers/errors-controller');
 const express = require('express');
-
 const app = express();
+
+app.use(cors()); 
+
 app.use(express.json());
 
 app.get('/api/topics', getTopics);

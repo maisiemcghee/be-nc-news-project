@@ -368,3 +368,17 @@ describe('GET /api/articles (topic query)', () => {
         })
     })
 })
+
+// describe('GET /api/articles/:article_id (comment_count)', () => {
+//     test('returns a 200 status code and correct article response object including comment_count', () => {
+//         return request(app)
+//         .get('/api/articles/1')
+//         .expect(200)
+//         .then(({ body }) => {
+//             expect(body.article).toMatchObject({
+//                 article_id: 1,
+//                 comment_count: 11
+//             })
+//         })
+//     })
+// })
