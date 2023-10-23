@@ -116,5 +116,21 @@ const checkTopicExists = (topic) => {
     })
 }
 
+// const addCommentCount = (article_id) => {
+//     let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comment_id) AS INT) AS comment_count
+//     FROM articles
+//     LEFT JOIN comments ON comments.article_id = articles.article_id` 
+
+//     const queryValues = []
+//     if (article_id) {
+//         queryString += ` WHERE article_id = $1 `
+//         queryValues.push(article_id)
+//     }
+//     queryString +=  ` GROUP BY articles.article_id
+//     ORDER BY articles.created_at DESC`
+//         return db.query(queryString, queryValues)
+//     .then((result) => {
+//         })
+// }
 
 module.exports = { fetchTopics, selectArticleById, fetchArticles, selectCommentsByArticleId, insertComment, patchArticle, removeComment, fetchUsers, fetchArticlesByTopic}

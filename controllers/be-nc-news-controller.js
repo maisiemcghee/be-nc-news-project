@@ -14,10 +14,16 @@ exports.getEndpoints = (req, res, next) => {
 
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
-    selectArticleById(article_id).then((article) => {
+    return selectArticleById(article_id).then((article) => {
         res.status(200).send({ article });
     })
-    .catch((next))
+    .catch(next)
+    .then(() => {
+        return addCommentCount(article_id).then((article) => {
+            res.status(200).send({ article })
+        })
+    })
+    .catch(next)
 }
 
 exports.getArticles = (req, res, next) => {
